@@ -50,6 +50,9 @@ class FirebaseController {
   /// Function to log in a user
   Future loginUser(TextEditingController email, TextEditingController password,
       BuildContext context) async {
+    bool isAdmin = false;
+    bool isBanned = false;
+
     /// Check if email and password field are empty
     if (email.text == '' || password.text == '' || password.text.length < 6) {
       Fluttertoast.showToast(
@@ -71,12 +74,40 @@ class FirebaseController {
           password: password.text,
         )
             .then((auth) {
-          return Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const HomePage(),
-            ),
-          );
+          FirebaseFirestore.instance
+              .collection('users')
+              .where('email', isEqualTo: email.text)
+              .get()
+              .then((querySnapshot) {
+            for (var doc in querySnapshot.docs) {
+              print(doc.data()['isAdmin']);
+              isAdmin = doc.data()['isAdmin'];
+              isBanned = doc.data()['isBanned'];
+            }
+            if (isAdmin && !isBanned) {
+              return Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const HomePage(),
+                ),
+              );
+            } else if (isBanned) {
+              Fluttertoast.showToast(
+                msg:
+                    "You have been banned from the app. Please contact support.",
+                backgroundColor: Constants.sideworkBlue,
+                textColor: Constants.lightTextColor,
+                timeInSecForIosWeb: 3,
+              );
+            } else {
+              Fluttertoast.showToast(
+                msg: "Only admins can log into the web app.",
+                backgroundColor: Constants.sideworkBlue,
+                textColor: Constants.lightTextColor,
+                timeInSecForIosWeb: 3,
+              );
+            }
+          });
         });
       } catch (e) {
         Fluttertoast.showToast(

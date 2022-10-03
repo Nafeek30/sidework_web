@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sidework_web/app_view/viewComplainsPage.dart';
+import 'package:sidework_web/app_view/viewUsersPage.dart';
 import 'package:sidework_web/landing_view/loginPage.dart';
 import 'package:sidework_web/utilities/constants.dart';
 import 'package:flutter/material.dart';
@@ -37,9 +39,74 @@ class HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Center(
-        child: Text(
-            'Mobile Home Page - ${FirebaseAuth.instance.currentUser!.email}'),
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: GridView(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            mainAxisSpacing: 20,
+            crossAxisSpacing: 20,
+          ),
+          children: [
+            /// View Users
+            InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ViewUsersPage()));
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Constants.sideworkBlue,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.person,
+                      size: 50,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      "View Users",
+                      style: TextStyle(color: Colors.white, fontSize: 30),
+                    )
+                  ],
+                ),
+              ),
+            ),
+
+            /// View Complains
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ViewComplainsPage()));
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Constants.sideworkBlue,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.admin_panel_settings,
+                      size: 50,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      "View Complains",
+                      style: TextStyle(color: Colors.white, fontSize: 30),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
