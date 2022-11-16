@@ -50,8 +50,8 @@ class FirebaseController {
   /// Function to log in a user
   Future loginUser(TextEditingController email, TextEditingController password,
       BuildContext context) async {
-    bool isAdmin = false;
-    bool isBanned = false;
+    bool? isAdmin = false;
+    bool? isBanned = false;
 
     /// Check if email and password field are empty
     if (email.text == '' || password.text == '' || password.text.length < 6) {
@@ -80,18 +80,17 @@ class FirebaseController {
               .get()
               .then((querySnapshot) {
             for (var doc in querySnapshot.docs) {
-              print(doc.data()['isAdmin']);
               isAdmin = doc.data()['isAdmin'];
               isBanned = doc.data()['isBanned'];
             }
-            if (isAdmin && !isBanned) {
+            if (isAdmin! && !isBanned!) {
               return Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => const HomePage(),
                 ),
               );
-            } else if (isBanned) {
+            } else if (isBanned!) {
               Fluttertoast.showToast(
                 msg:
                     "You have been banned from the app. Please contact support.",
